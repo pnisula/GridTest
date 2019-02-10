@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TileManager.h"
-
+#include "Tile.h"
 
 // Sets default values
 ATileManager::ATileManager()
@@ -47,8 +47,81 @@ void ATileManager::SpawnTiles()
 			FVector SpawnPosition = FVector(tilePositionX, tilePositionY, 0);
 			Spawned->SetActorRelativeLocation(SpawnPosition);
 			Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+
+			//Populate list
+			FTileInfo newTile = FTileInfo(Spawned, i, j);
+			TileInfo.Add(newTile);
 		}
 	}
+}
+void ATileManager::HideBorders(AActor* selectedTile)
+{	
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].Tile == selectedTile)
+		{
+			ATile* tile = Cast<ATile>(selectedTile);
+			tile->isSelected = true;
 
+			UE_LOG(LogTemp, Warning, TEXT("Tile found in tileInfo: %s"), *selectedTile->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("Tilerow: %d"), TileInfo[i].row);
+
+			if (TileInfo[i].row > 0)
+			{
+				CheckTileOnLeft(TileInfo[i].row, TileInfo[i].column);
+			}
+			if (TileInfo[i].row < TileInfo.Num() - 1)
+			{
+				CheckTileOnRight(TileInfo[i].row, TileInfo[i].column);
+			}
+			if (TileInfo[i].column > 0)
+			{
+				CheckTileOnBottom(TileInfo[i].row, TileInfo[i].column);
+				
+			}
+			if(TileInfo[i].column < TileInfo.Num() - 1)
+			{
+				CheckTileOnTop(TileInfo[i].row, TileInfo[i].column);
+			}
+		}
+	}
+}
+void ATileManager::CheckTileOnLeft(int row, int column)
+{
+	AActor* TileOnLeft = GetTileByRowAndColumn(row - 1, column);
+	ATile* tile = Cast<ATile>(TileOnLeft);
+	if (tile->isSelected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tile was selected"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tile was not selected"));
+	}
+	
+}
+void ATileManager::CheckTileOnRight(int row, int column)
+{
+
+}
+void ATileManager::CheckTileOnTop(int row, int column)
+{
+
+}
+void ATileManager::CheckTileOnBottom(int row, int column)
+{
+
+}
+
+AActor* ATileManager::GetTileByRowAndColumn(int row, int column)
+{
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].row == row && TileInfo[i].column == column)
+		{
+			return TileInfo[i].Tile;
+		}
+	}
+	return nullptr;
 }
 

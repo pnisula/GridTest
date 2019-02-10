@@ -6,20 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
-USTRUCT()
-struct FTileInfo
-{
-	GENERATED_BODY()
-	
-	UPROPERTY()
-	AActor* Tile;
-
-	UPROPERTY()
-	int row;
-	
-	UPROPERTY()
-	int column;
-};
 
 UCLASS()
 class GRIDTEST_API ATile : public AActor
@@ -38,6 +24,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
-	
+	UPROPERTY(VisibleAnywhere)
+	bool isSelected;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideLeftBorder();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideRightBorder();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideTopBorder();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideBottomBorder();
 };

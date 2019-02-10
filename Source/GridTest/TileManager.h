@@ -4,8 +4,52 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Tile.h"
 #include "TileManager.generated.h"
+
+USTRUCT()
+struct FTileInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	AActor* Tile;
+
+	UPROPERTY()
+	int row;
+
+	UPROPERTY()
+	int column;
+
+	UPROPERTY()
+	bool isSelected;
+
+	AActor* GetTile()
+	{
+		return Tile;
+	}
+	//Check
+	bool ActorIsValid() const
+	{
+		if (!Tile) return false;
+		return Tile->IsValidLowLevel();
+	}
+
+	//Constructor
+	FTileInfo()
+	{
+		//Always initialize your USTRUCT variables!
+		//   exception is if you know the variable type has its own default constructor
+		row = NULL;
+		column = NULL;
+		Tile = NULL;
+	}
+	FTileInfo(AActor* tile, int row, int column)
+	{
+		this->Tile = tile;
+		this->row = row;
+		this->column = column;
+	}
+};
 
 UCLASS()
 class GRIDTEST_API ATileManager : public AActor
@@ -39,8 +83,24 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	int TileHeight;
 
-	UFUNCTION(BlueprintCallable)
-	void SpawnTiles();
-
+	UPROPERTY()
 	TArray<FTileInfo> TileInfo;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnTiles();	
+
+	UFUNCTION(BlueprintCallable)
+	void HideBorders(AActor* selectedTile);
+
+	UFUNCTION()
+	void CheckTileOnLeft(int row, int column);
+	UFUNCTION()
+	void CheckTileOnRight(int row, int column);
+	UFUNCTION()
+	void CheckTileOnTop(int row, int column);
+	UFUNCTION()
+	void CheckTileOnBottom(int row, int column);
+	
+	UFUNCTION(BlueprintCallable)
+	AActor* GetTileByRowAndColumn(int row, int column);		
 };
