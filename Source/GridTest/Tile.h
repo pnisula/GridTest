@@ -24,9 +24,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
-	bool isSelected;
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideLeftBorder();
 

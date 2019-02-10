@@ -21,7 +21,7 @@ struct FTileInfo
 	int column;
 
 	UPROPERTY()
-	bool isSelected;
+	bool isSelected = false;
 
 	AActor* GetTile()
 	{
@@ -90,16 +90,22 @@ public:
 	void SpawnTiles();	
 
 	UFUNCTION(BlueprintCallable)
-	void HideBorders(AActor* selectedTile);
+	void HideTopBorders(AActor* selectedTile);
+	UFUNCTION(BlueprintCallable)
+	void HideBottomBorders(AActor* selectedTile);
+	UFUNCTION(BlueprintCallable)
+	void HideLeftBorders(AActor* selectedTile);
+	UFUNCTION(BlueprintCallable)
+	void HideRightBorders(AActor* selectedTile);
 
 	UFUNCTION()
-	void CheckTileOnLeft(int row, int column);
+	bool CheckTileOnLeft(int row, int column);
 	UFUNCTION()
-	void CheckTileOnRight(int row, int column);
+	bool CheckTileOnRight(int row, int column);
 	UFUNCTION()
-	void CheckTileOnTop(int row, int column);
+	bool CheckTileOnTop(int row, int column);
 	UFUNCTION()
-	void CheckTileOnBottom(int row, int column);
+	bool CheckTileOnBottom(int row, int column);
 	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetTileByRowAndColumn(int row, int column);		

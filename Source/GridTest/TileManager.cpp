@@ -54,63 +54,181 @@ void ATileManager::SpawnTiles()
 		}
 	}
 }
-void ATileManager::HideBorders(AActor* selectedTile)
-{	
+void ATileManager::HideTopBorders(AActor* selectedTile)
+{		
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{				
+		if (TileInfo[i].Tile == selectedTile)
+		{
+			TileInfo[i].isSelected = true;
+			UE_LOG(LogTemp, Warning, TEXT("Current -> Row: %d, Column: %d"), TileInfo[i].row, TileInfo[i].column);
+
+			if (TileInfo[i].row > 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Test"));
+				bool wasSelected = CheckTileOnBottom(TileInfo[i].row - 1, TileInfo[i].column);
+				if (wasSelected)
+				{
+					ATile* tile = (ATile*)TileInfo[i].Tile;
+					if (tile != nullptr)
+					{
+						tile->HideTopBorder();
+					}
+				}
+			}			
+			return;
+		}		
+	}	
+}
+void ATileManager::HideBottomBorders(AActor* selectedTile)
+{
 	for (int i = 0; i < TileInfo.Num(); i++)
 	{
 		if (TileInfo[i].Tile == selectedTile)
 		{
-			ATile* tile = Cast<ATile>(selectedTile);
-			tile->isSelected = true;
+			TileInfo[i].isSelected = true;
+			UE_LOG(LogTemp, Warning, TEXT("Current -> Row: %d, Column: %d"), TileInfo[i].row, TileInfo[i].column);
 
-			UE_LOG(LogTemp, Warning, TEXT("Tile found in tileInfo: %s"), *selectedTile->GetName());
-			UE_LOG(LogTemp, Warning, TEXT("Tilerow: %d"), TileInfo[i].row);
-
-			if (TileInfo[i].row > 0)
+			if (TileInfo[i].row < TileInfo.Num()-1)
 			{
-				CheckTileOnLeft(TileInfo[i].row, TileInfo[i].column);
+				UE_LOG(LogTemp, Warning, TEXT("Test"));
+				bool wasSelected = CheckTileOnTop(TileInfo[i].row + 1, TileInfo[i].column);
+				if (wasSelected)
+				{
+					ATile* tile = (ATile*)TileInfo[i].Tile;
+					if (tile != nullptr)
+					{
+						tile->HideBottomBorder();
+					}
+				}
 			}
-			if (TileInfo[i].row < TileInfo.Num() - 1)
-			{
-				CheckTileOnRight(TileInfo[i].row, TileInfo[i].column);
-			}
-			if (TileInfo[i].column > 0)
-			{
-				CheckTileOnBottom(TileInfo[i].row, TileInfo[i].column);
-				
-			}
-			if(TileInfo[i].column < TileInfo.Num() - 1)
-			{
-				CheckTileOnTop(TileInfo[i].row, TileInfo[i].column);
-			}
+			return;
 		}
 	}
 }
-void ATileManager::CheckTileOnLeft(int row, int column)
+void ATileManager::HideLeftBorders(AActor* selectedTile)
 {
-	AActor* TileOnLeft = GetTileByRowAndColumn(row - 1, column);
-	ATile* tile = Cast<ATile>(TileOnLeft);
-	if (tile->isSelected)
+	for (int i = 0; i < TileInfo.Num(); i++)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tile was selected"));
+		if (TileInfo[i].Tile == selectedTile)
+		{
+			TileInfo[i].isSelected = true;			
+
+			if (TileInfo[i].column > 0)
+			{				
+				bool wasSelected = CheckTileOnLeft(TileInfo[i].row, TileInfo[i].column-1);
+				if (wasSelected)
+				{
+					ATile* tile = (ATile*)TileInfo[i].Tile;
+					if (tile != nullptr)
+					{
+						tile->HideRightBorder();
+					}
+				}
+			}
+			return;
+		}
 	}
-	else
+}
+void ATileManager::HideRightBorders(AActor* selectedTile)
+{
+	for (int i = 0; i < TileInfo.Num(); i++)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tile was not selected"));
+		if (TileInfo[i].Tile == selectedTile)
+		{
+			TileInfo[i].isSelected = true;			
+
+			if (TileInfo[i].column < TileInfo.Num() - 1)
+			{				
+				bool wasSelected = CheckTileOnRight(TileInfo[i].row , TileInfo[i].column+1);
+				if (wasSelected)
+				{
+					ATile* tile = (ATile*)TileInfo[i].Tile;
+					if (tile != nullptr)
+					{
+						tile->HideLeftBorder();
+					}
+				}
+			}
+			return;
+		}
 	}
-	
 }
-void ATileManager::CheckTileOnRight(int row, int column)
-{
-
+bool ATileManager::CheckTileOnBottom(int row, int column)
+{	
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].row == row && TileInfo[i].column == column)
+		{
+			if (TileInfo[i].isSelected == true)
+			{
+				ATile* tile = (ATile*)TileInfo[i].Tile;
+				if (tile != nullptr)
+				{
+					tile->HideBottomBorder();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
-void ATileManager::CheckTileOnTop(int row, int column)
+bool ATileManager::CheckTileOnRight(int row, int column)
 {
-
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].row == row && TileInfo[i].column == column)
+		{
+			if (TileInfo[i].isSelected == true)
+			{
+				ATile* tile = (ATile*)TileInfo[i].Tile;
+				if (tile != nullptr)
+				{
+					tile->HideRightBorder();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
-void ATileManager::CheckTileOnBottom(int row, int column)
+bool ATileManager::CheckTileOnLeft(int row, int column)
 {
-
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].row == row && TileInfo[i].column == column)
+		{
+			if (TileInfo[i].isSelected == true)
+			{
+				ATile* tile = (ATile*)TileInfo[i].Tile;
+				if (tile != nullptr)
+				{
+					tile->HideLeftBorder();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool ATileManager::CheckTileOnTop(int row, int column)
+{
+	for (int i = 0; i < TileInfo.Num(); i++)
+	{
+		if (TileInfo[i].row == row && TileInfo[i].column == column)
+		{
+			if (TileInfo[i].isSelected == true)
+			{
+				ATile* tile = (ATile*)TileInfo[i].Tile;
+				if (tile != nullptr)
+				{
+					tile->HideTopBorder();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 AActor* ATileManager::GetTileByRowAndColumn(int row, int column)
