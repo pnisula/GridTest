@@ -89,7 +89,7 @@ void ATileManager::HideBottomBorders(AActor* selectedTile)
 			TileInfo[i].isSelected = true;
 			UE_LOG(LogTemp, Warning, TEXT("Current -> Row: %d, Column: %d"), TileInfo[i].row, TileInfo[i].column);
 
-			if (TileInfo[i].row < TileInfo.Num()-1)
+			if (TileInfo[i].row < RowsToSpawn-1)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Test"));
 				bool wasSelected = CheckTileOnTop(TileInfo[i].row + 1, TileInfo[i].column);
@@ -138,7 +138,7 @@ void ATileManager::HideRightBorders(AActor* selectedTile)
 		{
 			TileInfo[i].isSelected = true;			
 
-			if (TileInfo[i].column < TileInfo.Num() - 1)
+			if (TileInfo[i].column < ColumnsToSpawn - 1)
 			{				
 				bool wasSelected = CheckTileOnRight(TileInfo[i].row , TileInfo[i].column+1);
 				if (wasSelected)
