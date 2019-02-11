@@ -90,22 +90,25 @@ public:
 	void SpawnTiles();	
 
 	UFUNCTION(BlueprintCallable)
-	void HideTopBorders(AActor* selectedTile);
-	UFUNCTION(BlueprintCallable)
-	void HideBottomBorders(AActor* selectedTile);
-	UFUNCTION(BlueprintCallable)
-	void HideLeftBorders(AActor* selectedTile);
-	UFUNCTION(BlueprintCallable)
-	void HideRightBorders(AActor* selectedTile);
+	void HideBorders(AActor* selectedTile);
 
 	UFUNCTION()
-	bool CheckTileOnLeft(int row, int column);
+	void HideTopBorders(int index, AActor* selectedTile);
 	UFUNCTION()
-	bool CheckTileOnRight(int row, int column);
+	void HideBottomBorders(int index, AActor* selectedTile);
 	UFUNCTION()
-	bool CheckTileOnTop(int row, int column);
+	void HideLeftBorders(int index, AActor* selectedTile);
 	UFUNCTION()
-	bool CheckTileOnBottom(int row, int column);
+	void HideRightBorders(int index, AActor* selectedTile);
+
+	UFUNCTION()
+	void CheckTileOnLeft(AActor* tileActor);
+	UFUNCTION()
+	void CheckTileOnRight(AActor* tileActor);
+	UFUNCTION()
+	void CheckTileOnTop(AActor* tileActor);
+	UFUNCTION()
+	void CheckTileOnBottom(AActor* tileActor);
 	
 	UFUNCTION(BlueprintCallable)
 	AActor* GetTileByRowAndColumn(int row, int column);		

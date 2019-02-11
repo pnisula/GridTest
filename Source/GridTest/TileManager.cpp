@@ -54,181 +54,99 @@ void ATileManager::SpawnTiles()
 		}
 	}
 }
-void ATileManager::HideTopBorders(AActor* selectedTile)
-{		
+void ATileManager::HideBorders(AActor* selectedTile)
+{
 	for (int i = 0; i < TileInfo.Num(); i++)
-	{				
+	{
 		if (TileInfo[i].Tile == selectedTile)
 		{
 			TileInfo[i].isSelected = true;
-			UE_LOG(LogTemp, Warning, TEXT("Current -> Row: %d, Column: %d"), TileInfo[i].row, TileInfo[i].column);
-
-			if (TileInfo[i].row > 0)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Test"));
-				bool wasSelected = CheckTileOnBottom(TileInfo[i].row - 1, TileInfo[i].column);
-				if (wasSelected)
-				{
-					ATile* tile = (ATile*)TileInfo[i].Tile;
-					if (tile != nullptr)
-					{
-						tile->HideTopBorder();
-					}
-				}
-			}			
-			return;
-		}		
+			HideTopBorders(i, selectedTile);
+			HideBottomBorders(i, selectedTile);
+			HideLeftBorders(i, selectedTile);
+			HideRightBorders(i, selectedTile);
+		}
 	}	
 }
-void ATileManager::HideBottomBorders(AActor* selectedTile)
-{
-	for (int i = 0; i < TileInfo.Num(); i++)
-	{
-		if (TileInfo[i].Tile == selectedTile)
-		{
-			TileInfo[i].isSelected = true;
-			UE_LOG(LogTemp, Warning, TEXT("Current -> Row: %d, Column: %d"), TileInfo[i].row, TileInfo[i].column);
+void ATileManager::HideTopBorders(int index, AActor* selectedTile)
+{			
+	if (TileInfo[index].row < 1) return;
+	if (!TileInfo[index - RowsToSpawn].isSelected) return;
+	
+	CheckTileOnBottom(TileInfo[index - RowsToSpawn].Tile);
 
-			if (TileInfo[i].row < RowsToSpawn-1)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Test"));
-				bool wasSelected = CheckTileOnTop(TileInfo[i].row + 1, TileInfo[i].column);
-				if (wasSelected)
-				{
-					ATile* tile = (ATile*)TileInfo[i].Tile;
-					if (tile != nullptr)
-					{
-						tile->HideBottomBorder();
-					}
-				}
-			}
-			return;
-		}
-	}
+	ATile* tile = (ATile*)TileInfo[index].Tile;
+	if (tile == nullptr) return;
+		
+	tile->HideTopBorder();								
 }
-void ATileManager::HideLeftBorders(AActor* selectedTile)
-{
-	for (int i = 0; i < TileInfo.Num(); i++)
-	{
-		if (TileInfo[i].Tile == selectedTile)
-		{
-			TileInfo[i].isSelected = true;			
+void ATileManager::HideBottomBorders(int index, AActor* selectedTile)
+{		
+	if (TileInfo[index].row >= RowsToSpawn-1) return;	
+	if (!TileInfo[index + RowsToSpawn].isSelected) return;
 
-			if (TileInfo[i].column > 0)
-			{				
-				bool wasSelected = CheckTileOnLeft(TileInfo[i].row, TileInfo[i].column-1);
-				if (wasSelected)
-				{
-					ATile* tile = (ATile*)TileInfo[i].Tile;
-					if (tile != nullptr)
-					{
-						tile->HideRightBorder();
-					}
-				}
-			}
-			return;
-		}
-	}
-}
-void ATileManager::HideRightBorders(AActor* selectedTile)
-{
-	for (int i = 0; i < TileInfo.Num(); i++)
-	{
-		if (TileInfo[i].Tile == selectedTile)
-		{
-			TileInfo[i].isSelected = true;			
+	CheckTileOnTop(TileInfo[index + RowsToSpawn].Tile);
 
-			if (TileInfo[i].column < ColumnsToSpawn - 1)
-			{				
-				bool wasSelected = CheckTileOnRight(TileInfo[i].row , TileInfo[i].column+1);
-				if (wasSelected)
-				{
-					ATile* tile = (ATile*)TileInfo[i].Tile;
-					if (tile != nullptr)
-					{
-						tile->HideLeftBorder();
-					}
-				}
-			}
-			return;
-		}
-	}
+	ATile* tile = (ATile*)TileInfo[index].Tile;
+	if (tile == nullptr) return;
+		
+	tile->HideBottomBorder();						
 }
-bool ATileManager::CheckTileOnBottom(int row, int column)
+void ATileManager::HideLeftBorders(int index, AActor* selectedTile)
 {	
-	for (int i = 0; i < TileInfo.Num(); i++)
-	{
-		if (TileInfo[i].row == row && TileInfo[i].column == column)
-		{
-			if (TileInfo[i].isSelected == true)
-			{
-				ATile* tile = (ATile*)TileInfo[i].Tile;
-				if (tile != nullptr)
-				{
-					tile->HideBottomBorder();
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+	if (TileInfo[index].column < 1) return;
+	if (!TileInfo[index - 1].isSelected) return;
+		
+	CheckTileOnLeft(TileInfo[index - 1].Tile);
+
+	ATile* tile = (ATile*)TileInfo[index].Tile;
+	if (tile == nullptr) return;
+
+	tile->HideRightBorder();
 }
-bool ATileManager::CheckTileOnRight(int row, int column)
+void ATileManager::HideRightBorders(int index, AActor* selectedTile)
 {
-	for (int i = 0; i < TileInfo.Num(); i++)
-	{
-		if (TileInfo[i].row == row && TileInfo[i].column == column)
-		{
-			if (TileInfo[i].isSelected == true)
-			{
-				ATile* tile = (ATile*)TileInfo[i].Tile;
-				if (tile != nullptr)
-				{
-					tile->HideRightBorder();
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+	if (TileInfo[index].column >= ColumnsToSpawn - 1) return;	
+	if (!TileInfo[index + 1].isSelected) return;
+		
+	CheckTileOnRight(TileInfo[index + 1].Tile);
+
+	ATile* tile = (ATile*)TileInfo[index].Tile;
+	if (tile == nullptr) return;
+			
+	tile->HideLeftBorder();
 }
-bool ATileManager::CheckTileOnLeft(int row, int column)
-{
-	for (int i = 0; i < TileInfo.Num(); i++)
+void ATileManager::CheckTileOnBottom(AActor* tileActor)
+{	
+	ATile* tile = (ATile*)tileActor;
+	if (tile != nullptr)
 	{
-		if (TileInfo[i].row == row && TileInfo[i].column == column)
-		{
-			if (TileInfo[i].isSelected == true)
-			{
-				ATile* tile = (ATile*)TileInfo[i].Tile;
-				if (tile != nullptr)
-				{
-					tile->HideLeftBorder();
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+		tile->HideBottomBorder();		
+	}			
 }
-bool ATileManager::CheckTileOnTop(int row, int column)
+void ATileManager::CheckTileOnRight(AActor* tileActor)
 {
-	for (int i = 0; i < TileInfo.Num(); i++)
+	ATile* tile = (ATile*)tileActor;
+	if (tile != nullptr)
 	{
-		if (TileInfo[i].row == row && TileInfo[i].column == column)
-		{
-			if (TileInfo[i].isSelected == true)
-			{
-				ATile* tile = (ATile*)TileInfo[i].Tile;
-				if (tile != nullptr)
-				{
-					tile->HideTopBorder();
-					return true;
-				}
-			}
-		}
+		tile->HideRightBorder();
+	}	
+}
+void ATileManager::CheckTileOnLeft(AActor* tileActor)
+{
+	ATile* tile = (ATile*)tileActor;
+	if (tile != nullptr)
+	{
+		tile->HideLeftBorder();
+	}	
+}
+void ATileManager::CheckTileOnTop(AActor* tileActor)
+{
+	ATile* tile = (ATile*)tileActor;
+	if (tile != nullptr)
+	{
+		tile->HideTopBorder();
 	}
-	return false;
 }
 
 AActor* ATileManager::GetTileByRowAndColumn(int row, int column)
